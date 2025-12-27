@@ -51,12 +51,12 @@ class ConfigController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $request->validate([
             'id'=> 'required',
-            'name'  => 'required|string|max:255',
+            // 'name'  => 'required|string|max:255',
             'setup' => 'required|array', 
         ]);
         $setupJson = json_encode($request->setup, JSON_UNESCAPED_UNICODE);
         $config = AutomationConfig::where('id',$request->id)->update([
-            'name'        => $request->name,
+            // 'name'        => $request->name,
             'setup'       => $setupJson,
             'updated_at'  => now(),
             'updated_by'  => $user->id,
