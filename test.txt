@@ -1,0 +1,202 @@
+```json
+
+```
+
+---
+
+## 2. Page Navigation Domain: "Wait for Navigation"
+
+```json
+
+```
+
+---
+
+## 3. DOM Interaction Domain: "Wait for Selector"
+
+```json
+
+```
+
+---
+
+## 4. Data Extraction Domain: "Take Screenshot"
+
+```json
+
+```
+
+---
+
+## 5. Input Simulation Domain: "Upload File"
+
+```json
+
+```
+
+---
+
+## 6. Network Control Domain: "Wait for Response"
+
+```json
+
+```
+
+---
+
+## 7. State & Storage Domain: "Get Local Storage"
+
+```json
+
+```
+
+---
+
+## 8. Advanced Control Domain: "Evaluate JavaScript"
+
+```json
+
+```
+
+---
+
+## 9. Advanced Control Domain: "Loop"
+
+```json
+
+```
+
+---
+
+## 10. Advanced Control Domain: "Try Catch (Error Handling)"
+
+```json
+
+11. UI Interaction Domain: "Page Actions"
+
+12. State & Storage Domain: "Manage Cookies"
+
+13. File Actions Domain: "Upload / Download File"
+
+14. Utility Domain: "Wait / Sleep"
+
+15. Page Actions Domain: "Screenshot / PDF Export"
+
+16. Page Actions Domain: "Clipboard Actions"
+
+17. Page Actions Domain: "Modal / Alert Handling"
+
+18. Advanced Control Domain: "Custom Event Trigger"
+
+# 📁 **الملف الأول - الإضافات بعد المهمة 18**
+
+---
+
+## **19. Browser Tab Management: "New Tab/Window"**
+
+```json
+
+```
+
+---
+
+## **20. Browser Tab Management: "Switch Tab"**
+
+```json
+
+```
+
+---
+
+## **21. Browser Tab Management: "Close Tab"**
+
+```json
+
+```
+
+---
+
+## **22. Browser Frame Management: "Switch to Frame"**
+
+```json
+
+```
+
+---
+
+## **23. Advanced Control Domain: "IF/ELSE Condition"**
+
+```json
+
+```
+
+---
+
+## **24. UI Interaction Domain: "Drag and Drop"**
+
+```json
+
+```
+
+---
+
+## **25. State & Storage Domain: "Set Local Storage"**
+
+```json
+
+```
+
+---
+
+## **26. State & Storage Domain: "Clear Local Storage"**
+
+```json
+
+```
+
+---
+
+## **27. Network Control Domain: "Intercept Request"**
+
+```json
+
+```
+
+---
+
+## **28. Network Control Domain: "Listen to Requests"**
+
+```json
+
+```
+
+---
+
+## **29. Debugging Domain: "Capture Console"**
+
+```json
+
+```
+
+---
+
+## **30. Debugging Domain: "Get Performance Metrics"**
+
+```json
+
+```
+
+---
+
+## **31. Data Extraction Domain: "Get Element Attribute"**
+
+```json
+
+```
+
+---
+
+## **32. UI Interaction Domain: "Set Element Attribute"**
+
+```json
+
