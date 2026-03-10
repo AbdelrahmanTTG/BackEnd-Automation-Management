@@ -12,19 +12,23 @@ class Workflow extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'name',
         'description',
         'nodes',
         'edges',
         'status',
         'version',
-        'user_id',
     ];
 
     protected $casts = [
         'nodes' => 'array',
         'edges' => 'array',
     ];
+
+    // ═══════════════════════════════════════════════════════════
+    // Relationships
+    // ═══════════════════════════════════════════════════════════
 
     public function user()
     {
@@ -36,11 +40,21 @@ class Workflow extends Model
         return $this->hasMany(WorkflowExecution::class);
     }
 
-    public function activeExecutions()
+    // ═══════════════════════════════════════════════════════════
+    // Helper Methods
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Get only online executions
+     */
+    public function onlineExecutions()
     {
-        return $this->executions()->where('status', 'active');
+        return $this->executions()->where('status', 'online');
     }
 
+    /**
+     * Duplicate workflow
+     */
     public function duplicate()
     {
         $newWorkflow = $this->replicate();
@@ -50,5 +64,13 @@ class Workflow extends Model
         $newWorkflow->save();
 
         return $newWorkflow;
+    }
+
+    /**
+     * Count total steps in workflow
+     */
+    public function getTotalStepsAttribute()
+    {
+        return is_array($this->nodes) ? count($this->nodes) : 0;
     }
 }

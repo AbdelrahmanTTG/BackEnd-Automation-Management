@@ -1,9 +1,8 @@
 <?php
-// app/Http/Controllers/Api/WorkflowController.php
+// app/Http/Controllers/WorkflowController.php
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Workflow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,11 +10,12 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class WorkflowController extends Controller
 {
+    /**
+     * Get all workflows for authenticated user
+     */
     public function index(Request $request)
     {
-        $query = Workflow::with(['executions' => function ($q) {
-            $q->where('status', 'active');
-        }])
+        $query = Workflow::with(['executions'])
             ->where('user_id', $request->user()->id);
 
         if ($request->has('status')) {
@@ -34,12 +34,19 @@ class WorkflowController extends Controller
         ]);
     }
 
+    /**
+     * Create new workflow
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'nodes' => 'required|array',
+            'nodes' => 'required|array|min:1',
+            'nodes.*.id' => 'required|string',
+            'nodes.*.actionId' => 'required|string',
+            'nodes.*.config' => 'required|array',
+            'nodes.*.position' => 'required|array',
             'edges' => 'required|array',
         ]);
 
@@ -51,12 +58,13 @@ class WorkflowController extends Controller
         }
 
         $workflow = Workflow::create([
+            'user_id' => $request->user()->id,
             'name' => $request->name,
             'description' => $request->description,
             'nodes' => $request->nodes,
             'edges' => $request->edges,
             'status' => 'draft',
-            'user_id' => $request->user()->id,
+            'version' => 1,
         ]);
 
         return response()->json([
@@ -66,9 +74,13 @@ class WorkflowController extends Controller
         ], 201);
     }
 
+    /**
+     * Get single workflow
+     */
     public function show($id)
     {
         $workflow = Workflow::with('executions')->findOrFail($id);
+
         $user = JWTAuth::parseToken()->authenticate();
         if ($workflow->user_id !== $user->id) {
             return response()->json([
@@ -83,9 +95,13 @@ class WorkflowController extends Controller
         ]);
     }
 
+    /**
+     * Update workflow
+     */
     public function update(Request $request, $id)
     {
         $workflow = Workflow::findOrFail($id);
+
         $user = JWTAuth::parseToken()->authenticate();
         if ($workflow->user_id !== $user->id) {
             return response()->json([
@@ -97,7 +113,7 @@ class WorkflowController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
-            'nodes' => 'sometimes|required|array',
+            'nodes' => 'sometimes|required|array|min:1',
             'edges' => 'sometimes|required|array',
             'status' => 'sometimes|in:draft,active,inactive',
         ]);
@@ -109,11 +125,18 @@ class WorkflowController extends Controller
             ], 422);
         }
 
+        // Increment version if nodes changed
         if ($request->has('nodes') && $request->nodes != $workflow->nodes) {
             $workflow->version += 1;
         }
 
-        $workflow->update($request->only(['name', 'description', 'nodes', 'edges', 'status']));
+        $workflow->update($request->only([
+            'name',
+            'description',
+            'nodes',
+            'edges',
+            'status'
+        ]));
 
         return response()->json([
             'success' => true,
@@ -122,22 +145,26 @@ class WorkflowController extends Controller
         ]);
     }
 
+    /**
+     * Delete workflow
+     */
     public function destroy($id)
     {
         $workflow = Workflow::findOrFail($id);
+
         $user = JWTAuth::parseToken()->authenticate();
         if ($workflow->user_id !== $user->id) {
-       
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized access'
             ], 403);
         }
 
-        if ($workflow->activeExecutions()->count() > 0) {
+        // Check for online executions
+        if ($workflow->onlineExecutions()->count() > 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot delete workflow with active executions'
+                'message' => 'Cannot delete workflow with online executions. Stop all executions first.'
             ], 400);
         }
 
@@ -149,6 +176,9 @@ class WorkflowController extends Controller
         ]);
     }
 
+    /**
+     * Duplicate workflow
+     */
     public function duplicate($id)
     {
         $workflow = Workflow::findOrFail($id);
@@ -170,6 +200,9 @@ class WorkflowController extends Controller
         ], 201);
     }
 
+    /**
+     * Update workflow status
+     */
     public function updateStatus(Request $request, $id)
     {
         $workflow = Workflow::findOrFail($id);
@@ -197,7 +230,7 @@ class WorkflowController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Status updated successfully',
+            'message' => 'Workflow status updated successfully',
             'data' => $workflow
         ]);
     }

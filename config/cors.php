@@ -13,11 +13,11 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie','api/login'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'], 
 
-    'allowed_origins' => ['https://auto.aixnexus.com'], 
+    'allowed_origins' => ['*'], 
 
     'allowed_origins_patterns' => [],
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Middleware\EncryptionMiddleware;
 use App\Http\Controllers\WorkflowController;
 use App\Http\Controllers\WorkflowExecutionController;
+use App\Http\Controllers\BrowserConfigController;
 
 Route::middleware([EncryptionMiddleware::class])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -19,6 +20,16 @@ Route::middleware(['auth:api', EncryptionMiddleware::class])->group(function () 
     Route::post('/UpdateAutomation', [ConfigController::class, 'update']);
     Route::post('/configs', [ConfigController::class, 'index']);
     Route::delete('/DeleteAutomation/{id}', [ConfigController::class, 'delete']);
+    Route::prefix('browser-config')->group(function () {
+        Route::get('/all',              [BrowserConfigController::class, 'all']);
+        Route::get('/fields',           [BrowserConfigController::class, 'getFields']);
+        Route::put('/fields',           [BrowserConfigController::class, 'updateFields']);
+        Route::get('/presets',          [BrowserConfigController::class, 'getPresets']);
+        Route::post('/presets',         [BrowserConfigController::class, 'storePreset']);
+        Route::put('/presets/{id}',     [BrowserConfigController::class, 'updatePreset']);
+        Route::delete('/presets/{id}',  [BrowserConfigController::class, 'destroyPreset']);
+        Route::post('/presets/reorder', [BrowserConfigController::class, 'reorderPresets']);
+    });
     Route::prefix('workflows')->group(function () {
         Route::get('/', [WorkflowController::class, 'index']);
         Route::post('/', [WorkflowController::class, 'store']);
@@ -40,6 +51,7 @@ Route::middleware(['auth:api', EncryptionMiddleware::class])->group(function () 
             Route::post('/{executionId}/start', [WorkflowExecutionController::class, 'start']);
             Route::post('/{executionId}/stop', [WorkflowExecutionController::class, 'stop']);
         });
+       
     });
 });
 Route::middleware(['auth:api'])->group(function () {

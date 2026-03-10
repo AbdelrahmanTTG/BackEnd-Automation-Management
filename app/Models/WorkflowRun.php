@@ -1,4 +1,5 @@
 <?php
+// app/Models/WorkflowRun.php
 
 namespace App\Models;
 
@@ -9,8 +10,6 @@ class WorkflowRun extends Model
 {
     use HasFactory;
 
-    protected $table = 'workflow_runs';
-
     protected $fillable = [
         'workflow_execution_id',
         'status',
@@ -18,25 +17,33 @@ class WorkflowRun extends Model
         'output_data',
         'step_results',
         'error_message',
+        'error_step',
         'started_at',
         'completed_at',
         'duration_ms',
     ];
 
     protected $casts = [
-        'input_data'    => 'array',
-        'output_data'   => 'array',
-        'step_results'  => 'array',
-        'started_at'    => 'datetime',
-        'completed_at'  => 'datetime',
+        'input_data' => 'array',
+        'output_data' => 'array',
+        'step_results' => 'array',
+        'started_at' => 'datetime',
+        'completed_at' => 'datetime',
     ];
+
+    // ═══════════════════════════════════════════════════════════
+    // Relationships
+    // ═══════════════════════════════════════════════════════════
 
     public function workflowExecution()
     {
         return $this->belongsTo(WorkflowExecution::class);
     }
 
-   
+    // ═══════════════════════════════════════════════════════════
+    // Helper Methods
+    // ═══════════════════════════════════════════════════════════
+
     public function isRunning(): bool
     {
         return $this->status === 'running';
@@ -50,5 +57,10 @@ class WorkflowRun extends Model
     public function isFailed(): bool
     {
         return $this->status === 'failed';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
     }
 }
